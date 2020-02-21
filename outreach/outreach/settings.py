@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +70,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'outreach.wsgi.application'
+
+# Custom user model to use (in case we need to extend later)
+AUTH_USER_MODEL='users.Person'
 
 
 # Database
