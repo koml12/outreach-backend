@@ -1,6 +1,15 @@
 from rest_framework import routers
-from api.views import PersonViewSet
+from api.views import EvalRegister
+from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.SimpleRouter()
-router.register(r'people', PersonViewSet)
-urlpatterns = router.urls
+
+urlpatterns = [
+    path("register/evaluator/", EvalRegister.as_view(), name="EvalRegister"),
+    path("login", obtain_auth_token)
+]
+
+#router.register()
+
+urlpatterns = urlpatterns + router.urls
