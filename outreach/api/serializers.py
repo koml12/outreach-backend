@@ -1,5 +1,34 @@
 from rest_framework import serializers
-from api.models import Person, Evaluator
+from api.models import Person, Evaluator, Candidate, Registered
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registered
+        fields = [
+            "event",
+            "candidate",
+            "group",
+            "resume"
+        ]
+    
+    def create(self, validated_data):
+        registered = Registered(**validated_data)
+        registered.save()
+        return registered
+
+class CandidateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Candidate
+        fields = [
+            'person',
+            'Phone Number'
+        ]
+    
+    def create(self, validated_data):
+        candidate = Candidate(**validated_data)
+        candidate.save()
+        return candidate
+
 
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,11 +59,6 @@ class EvaluatorSerializer(PersonSerializer):
         fields = ('person',)
 
     def create(self, validated_data):
-        person = PersonSerializer(**validated_data)
-        if person.is_valid():
-            person = person.save()
-            evaluator = Evaluator({"person":person.pk})
-            evaluator.save()
-            return evaluator
-        else:
-            raise serializers.ValidationError("Something went wrong when creating evaluator.")
+        evaluator = Evaluator(**validated_data)
+        evaluator.save()
+        return evaluator

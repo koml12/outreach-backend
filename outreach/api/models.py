@@ -25,9 +25,11 @@ class Person(AbstractUser):
         return "{}".format(self.email)
 
 class Candidate(models.Model):
-    person = models.OneToOneField(Person,  
+    person = models.OneToOneField(Person,
         on_delete = models.CASCADE, primary_key = True)
     phone_number = models.CharField(max_length=10, name='Phone Number')
+    def __str__(self):
+        return "{}".format(self.person)
 
 class Evaluator(models.Model):
     person = models.OneToOneField(Person,  
@@ -59,7 +61,7 @@ class Registered(models.Model):
         on_delete=models.CASCADE
     )
     candidate = models.ForeignKey(
-        Candidate,
+        Person,
         on_delete=models.CASCADE
     )
     group = models.ForeignKey(
@@ -71,3 +73,5 @@ class Registered(models.Model):
         max_length=100,
         null=True
     )
+    class Meta:
+        unique_together = (("event", "candidate"),)
