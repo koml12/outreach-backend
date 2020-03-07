@@ -20,11 +20,11 @@ class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         fields = [
-            'username', 
-            'password', 
+            'id',  
             'email', 
             'first_name', 
-            'last_name'
+            'last_name',
+            'password'
         ]
         extra_kwargs = {
             'password': {
