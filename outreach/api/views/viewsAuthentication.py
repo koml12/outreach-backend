@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
-from api.serializers import EvaluatorSerializer, PersonSerializer, CandidateSerializer, RegistrationSerializer
+from api.serializers import PersonSerializer, CandidateSerializer, RegistrationSerializer
 from rest_framework.authtoken.models import Token
 from api.models import Person
 from django.db import transaction
@@ -15,16 +15,15 @@ class SignupIntoEvent(APIView):
         try:
             with transaction.atomic():
                 if trans.is_valid():
-                    trans = trans.save()
-                    person = trans
-                    request.data["person"] = trans.pk
-                    candidate = CandidateSerializer(data=request.data)
-                    if candidate.is_valid():
-                        trans = candidate.save()
-                        request.data["candidate"] = trans.pk
-                        reg = RegistrationSerializer(data=request.data)
-                        if reg.is_valid():
-                            trans = reg.save()
+                    person = trans.save()
+                    request.data["person"] = person.pk
+                    trans = CandidateSerializer(data=request.data)
+                    if trans.is_valid():
+                        candidate = trans.save()
+                        request.data["candidate"] = candidate.pk
+                        trans = RegistrationSerializer(data=request.data)
+                        if trans.is_valid():
+                            reg = trans.save()
                             return Response({"Response": "Added to event.","Token":Token.objects.get(user=person).key}, status=status.HTTP_201_CREATED)
                         else:
                             raise APIException()
