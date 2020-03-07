@@ -15,5 +15,12 @@ class EvaluatorViewSet(viewsets.ModelViewSet):
 
 
 class CandidateViewSet(viewsets.ModelViewSet):
-    queryset = Person.objects.filter(phone_number__isnull=False)
-    serializer_class = CandidateSerializer
+    queryset = Person.objects.filter(phone_number__isnull=False).filter(is_superuser=False)
+    permission_classes = [isOwner]
+    def destroy(self, request, *args, **kwargs):
+        return viewsets.ModelViewSet.destroy(self, request, *args, **kwargs)
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PersonSerializer
+        else:
+            return CandidateSerializer

@@ -38,6 +38,15 @@ class PersonSerializer(serializers.ModelSerializer):
         person.set_password(password)
         person.save()
         return person
+    
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr == 'password':
+                instance.set_password(value)
+            else:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
 
 class CandidateSerializer(PersonSerializer):
     phone_number = serializers.CharField(min_length=10, max_length=10, allow_blank=False)
