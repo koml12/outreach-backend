@@ -76,21 +76,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "resume"
         ]
     def validate(self, data):
-            dupTest = Registered.objects.filter(candidate__email=data['candidate']['email']).filter(event__id=data["event"].id)
-            if(len(dupTest) > 0):
-                raise serializers.ValidationError("You are already registered for this event.")
-            return data
-    
+        dupTest = Registered.objects.filter(candidate__email=data['candidate']['email']).filter(event__id=data["event"].id)
+        if len(dupTest) > 0:
+            raise serializers.ValidationError("You are already registered for this event.")
+        return data
+
     def create(self, validated_data):
-        candInfo = validated_data.pop('candidate')
-        query = Person.objects.filter(email=candInfo["email"])
-        if(len(query) == 0):
-            cand = CandidateSerializer(data=candInfo)
+        cand_info = validated_data.pop('candidate')
+        query = Person.objects.filter(email=cand_info["email"])
+        if len(query) == 0:
+            cand = CandidateSerializer(data=cand_info)
             cand.is_valid()
             cand.save()
         else:
             cand = query[0]
-            CandidateSerializer().update(cand, validated_data = candInfo)
+            CandidateSerializer().update(cand, validated_data=cand_info)
         validated_data["candidate"] = cand
         reg = Registered.objects.create(**validated_data)
         reg.save()
