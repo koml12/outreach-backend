@@ -34,13 +34,16 @@ class Event(models.Model):
 class Questionnaire(models.Model):
     event = models.ForeignKey(
         Event,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="questionnaire",
     )
+
 
 class Survey(models.Model):
     event = models.ForeignKey(
         Event,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="survey"
     )
 
 class Registered(models.Model):
