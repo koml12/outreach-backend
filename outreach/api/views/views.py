@@ -1,9 +1,9 @@
-from api.models import Person, Registered
+from api.models import Person, Registered, Event
 from rest_framework import views, viewsets, status
 from rest_framework.response import Response
-from api.serializers import CandidateSerializer, PersonSerializer, RegistrationSerializer
+from api.serializers import CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.permissions import isOwner_Person, isOwner_Registration
 
 class RegistrationViewSet(viewsets.ModelViewSet):
@@ -32,3 +32,10 @@ class CandidateViewSet(viewsets.ModelViewSet):
             return PersonSerializer
         else:
             return CandidateSerializer
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    def destroy(self, request, *args, **kwargs):
+        return viewsets.ModelViewSet.destroy(self, request, *args, **kwargs)

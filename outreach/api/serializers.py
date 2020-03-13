@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Person, Registered
+from api.models import Person, Registered, Event
 from django.core.validators import MaxLengthValidator, ProhibitNullCharactersValidator, EmailValidator
 from django.contrib.auth import authenticate
 
@@ -95,3 +95,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
         reg = Registered.objects.create(**validated_data)
         reg.save()
         return reg
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = [
+            "id",
+            'Event Name',
+            'Description',
+            'Start Time',
+            'End Time'
+        ]
+
