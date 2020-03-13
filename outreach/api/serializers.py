@@ -85,9 +85,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         cand_info = validated_data.pop('candidate')
         query = Person.objects.filter(email=cand_info["email"])
         if len(query) == 0:
-            cand = CandidateSerializer(data=cand_info)
-            cand.is_valid()
-            cand.save()
+            candSerializer = CandidateSerializer(data=cand_info)
+            candSerializer.is_valid()
+            cand = candSerializer.save()
         else:
             cand = query[0]
             CandidateSerializer().update(cand, validated_data=cand_info)
