@@ -7,6 +7,7 @@ from rest_framework.authtoken.models import Token
 from api.models import Person
 from django.db import transaction
 from rest_framework.authtoken.views import ObtainAuthToken
+from drf_yasg.utils import swagger_auto_schema
 
 class GetAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
