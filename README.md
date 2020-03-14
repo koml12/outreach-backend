@@ -44,7 +44,7 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
     ```
     Authentication : Token 5fe98b5200ee113083e0242835b54a6d22a6a162 
     ```
-+ Permissions have been set up to prevent misuse of the API.  Although swagger doesn't properly show the permission the API should let you know with a ``403`` status code.
++ Permissions have been setup to prevent misuse of the API (individually for each view).  Although swagger doesn't properly show the permissions, the API should let you know with a ``403`` status code.
 + **Candidate Registration**: ``POST /api/candidates`` is a valid way of putting a candidate into the system, however ``POST /api/registration`` should be used if you wish to put a candidate into the system and sign them up to an event.  Candidate username/email and password should match if the candidate already exists.  If the candidate already exists, and password is correct, any additional information, such a name and phone number, that is put in the candidate block of the request json will be used to update the candidate information.  If the candidate email doesn't exist, the candidate will be created.
 
 ## Additional Notes
