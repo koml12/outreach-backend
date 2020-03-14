@@ -106,4 +106,3 @@ class EventSerializer(serializers.ModelSerializer):
             'Start Time',
             'End Time'
         ]
-
