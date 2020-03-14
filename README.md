@@ -1,10 +1,12 @@
-# outreach-backend
+# Outreach-Backend
+
+This repo contains the API for the Outreach django application (2020 capstone project).
 
 ## Setup
-+ Install Windows Subsystem For Linux 
++ Install Windows Subsystem For Linux (if needed).
 https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
-+ Install Python 3.5 (should be installed already) but you might have to do `sudo apt-get install python3.5` in the bash shell for WSL
++ Install Python 3.5 (`apt-get install python3.5` in the bash shell).
 
 + Install Pip (to check, do `pip3 --version`). If you don't have it, `sudo apt-get install python3-pip`
 
@@ -28,6 +30,8 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
 + Run `pip3 install -r requirements.txt` to install Django and all other dependencies
 
 + `cd` into the `outreach` directory and run `python3 manage.py makemigrations` and `python3 manage.py migrate` to update your database schema with any changes that were made
+
++ `python3 manage.py runserver <hostname>:<port>` to run server. Hostname and port optional.
 
 + If you stop work on the project, run `deactivate` to stop the virtual environment
 
