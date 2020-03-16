@@ -14,5 +14,10 @@ class GetAuthToken(ObtainAuthToken):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'id':user.pk,'token': token.key})
+        token, _ = Token.objects.get_or_create(user=user)
+        userType = "Evaluator"
+        if(user.is_staff):
+            userType = "HR"
+        elif(user.phone_number):
+            userType = "Candidate"
+        return Response({'id':user.pk,'token': token.key, 'user_type':userType})
