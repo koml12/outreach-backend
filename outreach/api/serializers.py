@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Person, Registered, Event
+from api.models import Person, Registered, Event, Questionnaire
 from django.core.validators import MaxLengthValidator, ProhibitNullCharactersValidator, EmailValidator
 from django.contrib.auth import authenticate
 
@@ -100,9 +100,15 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = [
-            "id",
+            'id',
             'Event Name',
             'Description',
             'Start Time',
             'End Time'
         ]
+
+class QuestionnaireSerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(source='event_q', queryset=Event.objects.all())
+    class Meta:
+        model = Questionnaire
+        fields = ['id', 'event']

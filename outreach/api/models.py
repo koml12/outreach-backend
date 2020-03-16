@@ -32,19 +32,25 @@ class Event(models.Model):
     end = models.DateTimeField(name="End Time")
 
 class Questionnaire(models.Model):
-    event = models.ForeignKey(
+    event_q = models.OneToOneField( #For candidate
         Event,
         on_delete=models.CASCADE,
-        related_name="questionnaire",
+        null=True,
+        blank=True,
+        related_name="questionnaire_id",
     )
-
-
-class Survey(models.Model):
-    event = models.ForeignKey(
+    event_s = models.OneToOneField( #For evaluator
         Event,
         on_delete=models.CASCADE,
-        related_name="survey"
+        null=True,
+        blank=True,
+        related_name="survey_id",
     )
+
+class QuestionnaireAns(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    question = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    ans = models.CharField(max_length=50, name="Answer")
 
 class Registered(models.Model):
     event = models.ForeignKey(
