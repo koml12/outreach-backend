@@ -46,7 +46,17 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
     ```
 + Permissions have been setup to prevent misuse of the API (individually for each view).  Although swagger doesn't properly show the permissions, the API should let you know with a ``403`` status code.
 + **Candidate Registration**: ``POST /api/candidates`` is a valid way of putting a candidate into the system, however ``POST /api/registration`` should be used if you wish to put a candidate into the system and sign them up to an event.  Candidate username/email and password should match if the candidate already exists.  If the candidate already exists, and password is correct, any additional information, such a name and phone number, that is put in the candidate block of the request json will be used to update the candidate information.  If the candidate email doesn't exist, the candidate will be created.
-
++ **Surveys / Questionnaires**: *Note: surveys are for evaluators to comment on the performance of candidates.  Questionnaires are questions filled out by candidates when signing up.*
+    + Get survey or questionnaire id for an event by ```GET /api/event/``` or ```/api/event/[eventID]/```.
+    + Create a new survey or questionnaire for an event by ```POST /api/questionnaire/``` or ```POST /api/survey/```.
+    + Post a question (with  5 options) by ```POST /api/question/```.
+    + Add questions to a survey / questionnaire by ```PATCH /api/question/[questionID]/``` Specify questionnaires. e.g. :
+    ```
+    {
+        "questionnaires":[1, 2]
+    }
+    ```
+    + Answer a question by ```POST /api/answer/```.  Evaluator ID should be filled out for survey conducted by evaluator.  Should be left out for candidate questionnaires.  Also answer is an integer value between 0 and 4 (cooresponding to the 5 MCs).
 ## Additional Notes
 + Local Django uses SQLite as a database, but we will use Postgres on our actual hosted platform. I don't think we'll have to worry about the difference yet, there will just be a different set of data from your local to production (as there should be)
 
