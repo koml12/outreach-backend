@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Person, Registered, Event, Questionnaire
+from api.models import Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
 from django.core.validators import MaxLengthValidator, ProhibitNullCharactersValidator, EmailValidator
 from django.contrib.auth import authenticate
 
@@ -104,11 +104,39 @@ class EventSerializer(serializers.ModelSerializer):
             'Event Name',
             'Description',
             'Start Time',
-            'End Time'
+            'End Time',
+            'survey_id',
+            'questionnaire_id'
         ]
+        extra_kwargs = {
+            'survey_id': {'read_only': True},
+            'questionnaire_id': {'read_only': True},
+        }
 
 class QuestionnaireSerializer(serializers.ModelSerializer):
     event = serializers.PrimaryKeyRelatedField(source='event_q', queryset=Event.objects.all())
     class Meta:
         model = Questionnaire
-        fields = ['id', 'event']
+        fields = ['id', 'event', 'questions']
+        extra_kwargs = {
+            'questions': {'read_only': True},
+        }
+
+class SurveySerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(source='event_s', queryset=Event.objects.all())
+    class Meta:
+        model = Questionnaire
+        fields = ['id', 'event', 'questions']
+        extra_kwargs = {
+            'questions': {'read_only': True},
+        }
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'op1', 'op2', 'op3', 'op4', 'op5', 'questionnaires']
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionnaireAns
+        fields = ['id', 'candidate', 'evaluator', 'question', 'answer']

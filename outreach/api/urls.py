@@ -1,5 +1,5 @@
 from rest_framework import routers
-from api.views import QuestionnaireViewSet, RegistrationViewSet, EvaluatorViewSet, CandidateViewSet, EventViewSet, GetAuthToken
+from api.views import QuestionViewSet, QuestionAnswerViewSet, QuestionnaireViewSet, SurveyViewSet, RegistrationViewSet, EvaluatorViewSet, CandidateViewSet, EventViewSet, GetAuthToken
 from django.urls import path
 from drf_yasg.views import get_schema_view 
 from drf_yasg import openapi 
@@ -21,7 +21,10 @@ urlpatterns = [
     path("docs/", schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui') 
 ]
 
+router.register("question",QuestionViewSet)
+router.register("answer",QuestionAnswerViewSet)
 router.register("questionnaire", QuestionnaireViewSet)
+router.register("survey", SurveyViewSet)
 router.register("candidates", CandidateViewSet)
 router.register("evaluators", EvaluatorViewSet)
 router.register("registration", RegistrationViewSet)

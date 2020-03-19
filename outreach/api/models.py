@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from rest_framework.authtoken.models import Token
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -47,10 +48,26 @@ class Questionnaire(models.Model):
         related_name="survey_id",
     )
 
+class Question(models.Model):
+    text = models.CharField(max_length=500, name="text")
+    op1 = models.CharField(max_length=250, name="op1")
+    op2 = models.CharField(max_length=250, name="op2")
+    op3 = models.CharField(max_length=250, name="op3")
+    op4 = models.CharField(max_length=250, name="op4")
+    op5 = models.CharField(max_length=250, name="op5")
+    questionnaires = models.ManyToManyField(Questionnaire, related_name="questions")
+
+
 class QuestionnaireAns(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Person, on_delete=models.CASCADE)
+    evaluator = models.ForeignKey(Person, null=True, on_delete=models.CASCADE, related_name="questionnaireAns_e")
     question = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
-    ans = models.CharField(max_length=50, name="Answer")
+    ans = models.IntegerField(name="answer", validators=[
+            MaxValueValidator(4),
+            MinValueValidator(0)
+        ])
+    class Meta:
+        unique_together = (("candidate", "question"),)
 
 class Registered(models.Model):
     event = models.ForeignKey(

@@ -1,7 +1,7 @@
-from api.models import Person, Registered, Event, Questionnaire
+from api.models import Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
 from rest_framework import views, viewsets, status
 from rest_framework.response import Response
-from api.serializers import QuestionnaireSerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
+from api.serializers import AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.permissions import isOwner_Person, isOwner_Registration, IsAdminUserOrReadOnly
@@ -41,5 +41,17 @@ class EventViewSet(viewsets.ModelViewSet):
         return viewsets.ModelViewSet.destroy(self, request, *args, **kwargs)
 
 class QuestionnaireViewSet(viewsets.ModelViewSet):
-    queryset = Questionnaire.objects.all()
+    queryset = Questionnaire.objects.filter(event_q__isnull=False)
     serializer_class = QuestionnaireSerializer
+
+class SurveyViewSet(viewsets.ModelViewSet):
+    queryset = Questionnaire.objects.filter(event_s__isnull=False)
+    serializer_class = SurveySerializer
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+class QuestionAnswerViewSet(viewsets.ModelViewSet):
+    queryset = QuestionnaireAns.objects.all()
+    serializer_class = AnswerSerializer
