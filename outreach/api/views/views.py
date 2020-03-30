@@ -1,5 +1,6 @@
 from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
 from rest_framework import views, viewsets, status
+from django.db.models import Count
 from rest_framework.response import Response
 from api.serializers import GroupSerializer, AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
 from rest_framework.decorators import permission_classes, api_view
@@ -65,3 +66,15 @@ class GroupViewSet(viewsets.ModelViewSet):
         if('event' in self.request.query_params.keys()):
             qs = qs.filter(event=self.request.query_params['event'])
         return qs
+
+@api_view(['GET'])
+def divideGroups(request, eventID):
+    registrationsInEvent = list(Registered.objects.filter(event_id=eventID, group_id__isnull=True))
+    evaluatorsInEvent = Group.objects.filter(event=eventID)
+    if(evaluatorsInEvent == 0):
+        return Response({"Error": "There are no evaluators in this event!"})
+    for registration in registrationsInEvent:
+        group = evaluatorsInEvent.annotate(num_cand=Count('candidates')).order_by('num_cand')[0]
+        registration.group = group
+        registration.save()
+    return Response({"message":"Done."})

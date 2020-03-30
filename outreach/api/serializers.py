@@ -77,6 +77,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "resume"
         ]
     def validate(self, data):
+        if(self.context['request'].method == 'PATCH'):
+            return super(
+            RegistrationSerializer, 
+            self).validate(data)
         dupTest = Registered.objects.filter(candidate__email=data['candidate']['email']).filter(event__id=data["event"].id)
         if len(dupTest) > 0:
             raise serializers.ValidationError("You are already registered for this event.")
