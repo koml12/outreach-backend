@@ -1,10 +1,10 @@
-from api.models import Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
+from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
 from rest_framework import views, viewsets, status
 from rest_framework.response import Response
-from api.serializers import AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
+from api.serializers import GroupSerializer, AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from api.permissions import isOwner_Person, isOwner_Registration, IsAdminUserOrReadOnly
+from api.permissions import IsEvaluatorOrAdmin, isOwner_Person, isOwner_Registration, IsAdminUserOrReadOnly
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registered.objects.all()
@@ -55,3 +55,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class QuestionAnswerViewSet(viewsets.ModelViewSet):
     queryset = QuestionnaireAns.objects.all()
     serializer_class = AnswerSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsEvaluatorOrAdmin]
+    serializer_class = GroupSerializer
+    def get_queryset(self):
+        qs = Group.objects.all()
+        if('event' in self.request.query_params.keys()):
+            qs = qs.filter(event=self.request.query_params['event'])
+        return qs

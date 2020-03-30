@@ -58,6 +58,15 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
     }
     ```
     + Answer a question by ```POST /api/answer/```.  Evaluator ID should be filled out for survey conducted by evaluator.  Should be left out for candidate questionnaires.  Also answer is an integer value between 0 and 4 (cooresponding to the 5 MCs).
++ **Groups**:
+    + Can define and list groups using ```/api/group```.
+    + For this endpoint you may also GET ```/api/group/?event=<int:eventid>``` to list groups for a specific event.
+    + **Do this whenever an evaluator checks into an event:** POST to the endpoint to define a new group for an event.  This is a way of checking into an event as an evaluator (that way you may be assigned a group of candidates as an evaluator).  Be sure to authenticate with token in header and specify the event ID [for which you wish to define the new group for / check into] in the body of the request. e.g.:
+    ```
+    {
+        "event":2
+    }
+    ```
 
 ## Additional Notes
 + Local Django uses SQLite as a database, but we will use Postgres on our actual hosted platform. I don't think we'll have to worry about the difference yet, there will just be a different set of data from your local to production (as there should be)

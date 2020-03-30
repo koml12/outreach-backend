@@ -24,3 +24,11 @@ class IsAdminUserOrReadOnly(IsAdminUser):
             self).has_permission(request, view)
         # Python3: is_admin = super().has_permission(request, view)
         return request.method in SAFE_METHODS or is_admin
+
+class IsEvaluatorOrAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if((request.method in SAFE_METHODS) or request.user.is_staff):
+            return True
+        elif(request.user.id and request.user.phone_number):
+            return False
+        return True

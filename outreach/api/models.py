@@ -11,9 +11,6 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if(created):
         Token.objects.create(user = instance)
 
-class Group(models.Model):
-    pass
-
 class Person(AbstractUser):
     #first name, last name, email already in abstractUser
     username = models.CharField(max_length=50, blank=True, null=True)
@@ -31,6 +28,18 @@ class Event(models.Model):
     description = models.CharField(max_length=500, name="Description")
     start = models.DateTimeField(name="Start Time")
     end = models.DateTimeField(name="End Time")
+
+class Group(models.Model):
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE
+    )
+    evaluator = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE
+    )
+    class Meta:
+        unique_together = (("event", "evaluator"),)
 
 class Questionnaire(models.Model):
     event_q = models.OneToOneField( #For candidate
@@ -81,7 +90,8 @@ class Registered(models.Model):
     group = models.ForeignKey(
         Group,
         null=True,
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        related_name="candidates"
     )
     resume = models.CharField(
         max_length=100,

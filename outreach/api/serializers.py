@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from api.models import Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
+from rest_framework.fields import CurrentUserDefault
+from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
 from django.core.validators import MaxLengthValidator, ProhibitNullCharactersValidator, EmailValidator
 from django.contrib.auth import authenticate
 
@@ -140,3 +141,12 @@ class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionnaireAns
         fields = ['id', 'candidate', 'evaluator', 'question', 'answer']
+
+class GroupSerializer(serializers.ModelSerializer):
+    evaluator = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all(), default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Group
+        fields = ['id', 'event', 'evaluator', 'candidates']
+        extra_kwargs = {
+            'candidates': {'read_only': True},
+        }
