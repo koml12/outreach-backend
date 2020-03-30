@@ -98,7 +98,7 @@ class Registered(models.Model):
         on_delete=models.SET_NULL,
         related_name="candidates"
     )
-    resume = models.FileField(
+    resume = models.ForeignKey(
         Resume,
         on_delete=models.CASCADE
     )
