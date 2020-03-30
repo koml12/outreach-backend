@@ -1,11 +1,12 @@
-from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
+from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns, Resume
 from rest_framework import views, viewsets, status
 from django.db.models import Count
 from rest_framework.response import Response
-from api.serializers import GroupSerializer, AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer
+from api.serializers import GroupSerializer, AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer, ResumeSerializer
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.permissions import IsEvaluatorOrAdmin, isOwner_Person, isOwner_Registration, IsAdminUserOrReadOnly
+from rest_framework.parsers import FileUploadParser
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registered.objects.all()
@@ -78,3 +79,17 @@ def divideGroups(request, eventID):
         registration.group = group
         registration.save()
     return Response({"message":"Done."})
+
+class ResumeViewSet(viewsets.ModelViewSet):
+    queryset = Resume.objects.all()
+    parser_classes = [FileUploadParser]
+    serializer_class = ResumeSerializer
+    #need to convert PDF into raw file for parser or use a custom parser
+    def post(self, request, *args, **kwargs):
+        resume_serializer = ResumeSerializer(data=request.data)
+
+        if resume_serializer.is_valid():
+            resume_serializer.save()
+            return Response(resume_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(resume_serializer.data, status=status.HTTP_400_BAD_REQUEST)

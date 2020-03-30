@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns
+from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns, Resume
 from django.core.validators import MaxLengthValidator, ProhibitNullCharactersValidator, EmailValidator
 from django.contrib.auth import authenticate
 
@@ -51,6 +51,11 @@ def authCheck(email, password):
         return True
     return False
 
+class ResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resume
+        fields = "__all__"
+        
 class RegistrationSerializer(serializers.ModelSerializer):
     class CandSerializerNoUniqueEmail(CandidateSerializer):
         def validate(self,data):
@@ -65,7 +70,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
                     'write_only': True
                 }
             }
-    
+
     candidate = CandSerializerNoUniqueEmail()
     class Meta:
         model = Registered

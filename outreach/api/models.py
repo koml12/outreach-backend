@@ -78,6 +78,11 @@ class QuestionnaireAns(models.Model):
     class Meta:
         unique_together = (("candidate", "question"),)
 
+class Resume(models.Model):
+    file = models.FileField(blank=True, null=True)
+    def __str__(self):
+        return self.file.name
+
 class Registered(models.Model):
     event = models.ForeignKey(
         Event,
@@ -93,9 +98,9 @@ class Registered(models.Model):
         on_delete=models.SET_NULL,
         related_name="candidates"
     )
-    resume = models.CharField(
-        max_length=100,
-        null=True
+    resume = models.FileField(
+        Resume,
+        on_delete=models.CASCADE
     )
     class Meta:
         unique_together = (("event", "candidate"),)
