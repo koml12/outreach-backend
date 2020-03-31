@@ -82,7 +82,7 @@ def divideGroups(request, eventID):
 
 class ResumeViewSet(viewsets.ModelViewSet):
     queryset = Resume.objects.all()
-    parser_classes = [FileUploadParser]
+    #parser_classes = [FileUploadParser]
     serializer_class = ResumeSerializer
     #need to convert PDF into raw file for parser or use a custom parser
     def post(self, request, *args, **kwargs):
