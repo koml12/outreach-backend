@@ -1,5 +1,5 @@
 from rest_framework import routers
-from api.views import divideGroups, GroupViewSet, QuestionViewSet, QuestionAnswerViewSet, QuestionnaireViewSet, SurveyViewSet, RegistrationViewSet, EvaluatorViewSet, CandidateViewSet, EventViewSet, ResumeViewSet, GetAuthToken
+from api.views import divideGroups, GroupViewSet, QuestionViewSet, QuestionAnswerViewSet, QuestionnaireViewSet, SurveyViewSet, RegistrationViewSet, EvaluatorViewSet, CandidateViewSet, EventViewSet, ResumeViewSet, JobViewSet, GetAuthToken
 from django.urls import path, include
 from drf_yasg.views import get_schema_view 
 from drf_yasg import openapi 
@@ -35,6 +35,7 @@ router.register("evaluators", EvaluatorViewSet)
 router.register("registration", RegistrationViewSet)
 router.register("event", EventViewSet)
 router.register("resume", ResumeViewSet)
+router.register("job", JobViewSet)
 
 urlpatterns = urlpatterns + router.urls
 #if settings.DEBUG:

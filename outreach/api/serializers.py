@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns, Resume
+from api.models import Group, Person, Registered, Event, Questionnaire, Question, QuestionnaireAns, Resume, Job
 from django.core.validators import MaxLengthValidator, ProhibitNullCharactersValidator, EmailValidator
 from django.contrib.auth import authenticate
 
@@ -55,7 +55,11 @@ class ResumeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resume
         fields = "__all__"
-        
+class JobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job
+        fields = "__all__"
+
 class RegistrationSerializer(serializers.ModelSerializer):
     class CandSerializerNoUniqueEmail(CandidateSerializer):
         def validate(self,data):

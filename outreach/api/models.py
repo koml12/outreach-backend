@@ -83,6 +83,11 @@ class Resume(models.Model):
     def __str__(self):
        return self.file.name
 
+class Job(models.Model):
+    name = models.CharField(max_length=50, name="Job Title")
+    description = models.CharField(max_length=1000, name="Description")
+    
+
 class Registered(models.Model):
     event = models.ForeignKey(
         Event,
