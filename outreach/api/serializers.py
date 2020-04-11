@@ -159,7 +159,7 @@ class GroupSerializer(serializers.ModelSerializer):
     evaluator = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all(), default=serializers.CurrentUserDefault())
     class Meta:
         model = Group
-        fields = ['id', 'event', 'evaluator', 'candidates']
+        fields = ['id', 'name', 'event', 'evaluator', 'candidates']
         extra_kwargs = {
             'candidates': {'read_only': True},
         }

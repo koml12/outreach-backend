@@ -24,12 +24,13 @@ class Person(AbstractUser):
         return "{}".format(self.email)
 
 class Event(models.Model):
-    name = models.CharField(max_length=50, name="Event Name")
+    name = models.CharField(max_length=50, name="Event Name", )
     description = models.CharField(max_length=500, name="Description")
     start = models.DateTimeField(name="Start Time")
     end = models.DateTimeField(name="End Time")
 
 class Group(models.Model):
+    name = models.CharField(max_length=50)
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE
