@@ -7,6 +7,7 @@ from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.permissions import IsEvaluatorOrAdmin, isOwner_Person, isOwner_Registration, IsAdminUserOrReadOnly
 from rest_framework.parsers import FileUploadParser
+import api.SMS_Notify as SMS_Service
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registered.objects.all()
@@ -105,3 +106,15 @@ class JobViewSet(viewsets.ModelViewSet):
             return Response(resume_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(resume_serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def SMSNotify(request, candidate):
+    queryset = Person.objects.filter(id=candidate, phone_number__isnull=False).filter(is_superuser=False)
+    if(not queryset):
+        return Response({"Error": "No candidate with that ID!"})
+    else:
+        try:
+            SMS_Service.notifyNumber(queryset[0].first_name, queryset[0].phone_number)
+            return Response({})
+        except:
+            return Response({"Error":"There was a problem sending the text."})

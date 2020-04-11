@@ -2,3 +2,4 @@ env/
 .vscode
 *.pyc
 outreach/db.sqlite3
+outreach/api/TWILIO_CREDS.py

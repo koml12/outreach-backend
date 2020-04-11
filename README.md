@@ -68,6 +68,10 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
     }
     ```
     + For now, HR will manually commence group division for an event.  This would be commenced after all evaluators have checked into an event. That way candidates could be split into groups evenly depending on the amount of evaluators.  This will arbitrarily assign each candidates a group / evaluator.  A candidate can later be added individually to a group using PATCH ```/api/registered``` if so desired.  In order to commence group division perform GET ```/api/divideGroups/<int:eventID>```.
++ **Text Notify**:
+    + Notifies candidate about the interest of the company by sending a text.
+    + ```GET /api/smsnotify/<int:candidate_ID>```
+    + Add ```TWILIO_CREDS.py``` to ```api``` directory / module.
 
 + **Resume Uploading**:
     + Can upload any kind of file currently
