@@ -15,6 +15,14 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = [isOwner_Registration]
     def destroy(self, request, *args, **kwargs):
         return viewsets.ModelViewSet.destroy(self, request, *args, **kwargs)
+    
+    def get_queryset(self):
+        qs = Registered.objects.all()
+        if('event' in self.request.query_params.keys()):
+            qs = qs.filter(event=self.request.query_params['event'])
+        if('candidate' in self.request.query_params.keys()):
+            qs = qs.filter(candidate=self.request.query_params['candidate'])
+        return qs
 
 
 class EvaluatorViewSet(viewsets.ModelViewSet):
