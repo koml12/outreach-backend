@@ -132,7 +132,7 @@ class EventSerializer(serializers.ModelSerializer):
         ]
 
 class QuestionnaireSerializer(serializers.ModelSerializer):
-    events = serializers.RelatedField(read_only=True, many=True, source='events_q')
+    events = serializers.PrimaryKeyRelatedField(read_only=True, many=True, source='events_q')
     is_survey = serializers.HiddenField(default=False)
     class Meta:
         model = Questionnaire
@@ -140,7 +140,7 @@ class QuestionnaireSerializer(serializers.ModelSerializer):
         read_only_fields = ('questions',)
 
 class SurveySerializer(QuestionnaireSerializer):
-    events = serializers.RelatedField(read_only=True, many=True, source='events_s')
+    events = serializers.PrimaryKeyRelatedField(read_only=True, many=True, source='events_s')
     is_survey = serializers.HiddenField(default=True)
 
 class QuestionSerializer(serializers.ModelSerializer):
