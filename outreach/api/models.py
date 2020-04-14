@@ -23,11 +23,16 @@ class Person(AbstractUser):
     def __str__(self):
         return "{}".format(self.email)
 
+class Questionnaire(models.Model):
+    is_survey = models.BooleanField(default=True) #Survey = True; Questionnaire = False
+
 class Event(models.Model):
     name = models.CharField(max_length=50, name="Event Name", )
     description = models.CharField(max_length=500, name="Description")
     start = models.DateTimeField(name="Start Time")
     end = models.DateTimeField(name="End Time")
+    questionnaire = models.ForeignKey(Questionnaire, models.SET_NULL, null=True, related_name="events_q")
+    survey = models.ForeignKey(Questionnaire, models.SET_NULL, null=True, related_name="events_s")
 
 class Group(models.Model):
     name = models.CharField(max_length=50)
@@ -42,22 +47,6 @@ class Group(models.Model):
     class Meta:
         unique_together = (("event", "evaluator"),)
 
-class Questionnaire(models.Model):
-    event_q = models.OneToOneField( #For candidate
-        Event,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="questionnaire_id",
-    )
-    event_s = models.OneToOneField( #For evaluator
-        Event,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="survey_id",
-    )
-
 class Question(models.Model):
     text = models.CharField(max_length=500, name="text")
     op1 = models.CharField(max_length=250, name="op1")
@@ -65,13 +54,12 @@ class Question(models.Model):
     op3 = models.CharField(max_length=250, name="op3")
     op4 = models.CharField(max_length=250, name="op4")
     op5 = models.CharField(max_length=250, name="op5")
-    questionnaires = models.ManyToManyField(Questionnaire, related_name="questions")
-
+    questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE, related_name="questions")
 
 class QuestionnaireAns(models.Model):
     candidate = models.ForeignKey(Person, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(Person, null=True, on_delete=models.CASCADE, related_name="questionnaireAns_e")
-    question = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     ans = models.IntegerField(name="answer", validators=[
             MaxValueValidator(4),
             MinValueValidator(0)
@@ -87,7 +75,6 @@ class Resume(models.Model):
 class Job(models.Model):
     name = models.CharField(max_length=50, name="Job Title")
     description = models.CharField(max_length=1000, name="Description")
-    
 
 class Registered(models.Model):
     event = models.ForeignKey(

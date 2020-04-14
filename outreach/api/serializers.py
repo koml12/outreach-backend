@@ -111,6 +111,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return reg
 
 class EventSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if('questionnaire' in attrs and not attrs['questionnaire'].is_survey==False):
+            raise serializers.ValidationError("The given questionnaire is a survey.")
+        if('survey' in attrs and not attrs['survey'].is_survey==True):
+            raise serializers.ValidationError("The given survey is a questionnaire.")
+        return attrs
+    
     class Meta:
         model = Event
         fields = [
@@ -119,38 +127,36 @@ class EventSerializer(serializers.ModelSerializer):
             'Description',
             'Start Time',
             'End Time',
-            'survey_id',
-            'questionnaire_id'
+            'survey',
+            'questionnaire'
         ]
-        extra_kwargs = {
-            'survey_id': {'read_only': True},
-            'questionnaire_id': {'read_only': True},
-        }
 
 class QuestionnaireSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(source='event_q', queryset=Event.objects.all())
+    events = serializers.RelatedField(read_only=True, many=True, source='events_q')
+    is_survey = serializers.HiddenField(default=False)
     class Meta:
         model = Questionnaire
-        fields = ['id', 'event', 'questions']
-        extra_kwargs = {
-            'questions': {'read_only': True},
-        }
+        fields = ['id', 'events', 'questions', 'is_survey']
+        read_only_fields = ('questions',)
 
-class SurveySerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(source='event_s', queryset=Event.objects.all())
-    class Meta:
-        model = Questionnaire
-        fields = ['id', 'event', 'questions']
-        extra_kwargs = {
-            'questions': {'read_only': True},
-        }
+class SurveySerializer(QuestionnaireSerializer):
+    events = serializers.RelatedField(read_only=True, many=True, source='events_s')
+    is_survey = serializers.HiddenField(default=True)
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['id', 'text', 'op1', 'op2', 'op3', 'op4', 'op5', 'questionnaires']
+        fields = ['id', 'text', 'op1', 'op2', 'op3', 'op4', 'op5', 'questionnaire']
 
 class AnswerSerializer(serializers.ModelSerializer):
+    def get_unique_together_validators(self):
+        return []
+    def create(self, validated_data):
+        obj = QuestionnaireAns.objects.filter(candidate=validated_data["candidate"],question=validated_data["question"])
+        if(len(obj)==0):
+            return super().create(validated_data)
+        else:
+            return super().update(obj[0], validated_data)
     class Meta:
         model = QuestionnaireAns
         fields = ['id', 'candidate', 'evaluator', 'question', 'answer']

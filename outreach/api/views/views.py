@@ -52,11 +52,11 @@ class EventViewSet(viewsets.ModelViewSet):
         return viewsets.ModelViewSet.destroy(self, request, *args, **kwargs)
 
 class QuestionnaireViewSet(viewsets.ModelViewSet):
-    queryset = Questionnaire.objects.filter(event_q__isnull=False)
+    queryset = Questionnaire.objects.filter(is_survey=False)
     serializer_class = QuestionnaireSerializer
 
 class SurveyViewSet(viewsets.ModelViewSet):
-    queryset = Questionnaire.objects.filter(event_s__isnull=False)
+    queryset = Questionnaire.objects.filter(is_survey=True)
     serializer_class = SurveySerializer
 
 class QuestionViewSet(viewsets.ModelViewSet):
