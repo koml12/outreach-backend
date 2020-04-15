@@ -67,7 +67,8 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
     + Notifies candidate about the interest of the company by sending a text.
     + ```GET /api/smsnotify/<int:candidate_ID>```
     + Add ```TWILIO_CREDS.py``` to ```api``` directory / module.
-
++ **Resume Ranking**:
+    + Request a ranking of all candidates registered in a particular event by ```POST /api/ranking/```.  Specify the job ID and event ID in the request. 
 + **Resume Uploading**:
     + Can upload any kind of file currently
 ## Additional Notes
