@@ -4,3 +4,4 @@ env/
 outreach/db.sqlite3
 outreach/api/TWILIO_CREDS.py
 outreach/media/*
+outreach/parsed_media/*
