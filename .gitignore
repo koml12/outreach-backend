@@ -3,3 +3,4 @@ env/
 *.pyc
 outreach/db.sqlite3
 outreach/api/TWILIO_CREDS.py
+outreach/media/*
