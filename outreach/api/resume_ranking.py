@@ -45,14 +45,15 @@ def ranking(request):
         job_desc_vector = tfidf_vectorizer.fit_transform([job_desc]).toarray()
         resume_ranking = []
         for registration in registrations:
-            file_path = os.path.abspath(os.path.join(registration.resume.file.path,'..','..','parsed_media', registration.resume.file.name))
-            f = open(file_path,mode='r')
-            resume = f.read()
-            f.close()
-            res_vec = tfidf_vectorizer.transform([resume])
-            knn_1 = NearestNeighbors(n_neighbors=1, algorithm='auto')
-            knn_1.fit(res_vec)
-            resume_ranking.extend(knn_1.kneighbors(job_desc_vector)[0][0].tolist())
+            if registration.resume is not None:
+                file_path = os.path.abspath(os.path.join(registration.resume.file.path,'..','..','parsed_media', registration.resume.file.name))
+                f = open(file_path,mode='r')
+                resume = f.read()
+                f.close()
+                res_vec = tfidf_vectorizer.transform([resume])
+                knn_1 = NearestNeighbors(n_neighbors=1, algorithm='auto')
+                knn_1.fit(res_vec)
+                resume_ranking.extend(knn_1.kneighbors(job_desc_vector)[0][0].tolist())
         resume_rankings = [x for _,x in sorted(zip(resume_ranking,registrations))]
         return Response(RegistrationSerializer(resume_rankings,many=True).data)
     else:

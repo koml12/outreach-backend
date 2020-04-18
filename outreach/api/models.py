@@ -24,6 +24,7 @@ class Person(AbstractUser):
         return "{}".format(self.email)
 
 class Questionnaire(models.Model):
+    name = models.CharField(max_length=50)
     is_survey = models.BooleanField(default=True) #Survey = True; Questionnaire = False
 
 class Event(models.Model):

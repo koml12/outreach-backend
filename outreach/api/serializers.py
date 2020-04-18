@@ -113,9 +113,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        if('questionnaire' in attrs and not attrs['questionnaire'].is_survey==False):
+        if('questionnaire' in attrs and attrs['questionnaire'] is not None and not attrs['questionnaire'].is_survey==False):
             raise serializers.ValidationError("The given questionnaire is a survey.")
-        if('survey' in attrs and not attrs['survey'].is_survey==True):
+        if('survey' in attrs and attrs['questionnaire'] is not None and not attrs['survey'].is_survey==True):
             raise serializers.ValidationError("The given survey is a questionnaire.")
         return attrs
     
@@ -131,22 +131,25 @@ class EventSerializer(serializers.ModelSerializer):
             'questionnaire'
         ]
 
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'op1', 'op2', 'op3', 'op4', 'op5', 'questionnaire']
+
+
 class QuestionnaireSerializer(serializers.ModelSerializer):
     events = serializers.PrimaryKeyRelatedField(read_only=True, many=True, source='events_q')
+    questions = QuestionSerializer(many=True, required=False)
     is_survey = serializers.HiddenField(default=False)
     class Meta:
         model = Questionnaire
-        fields = ['id', 'events', 'questions', 'is_survey']
+        fields = ['id', 'name', 'events', 'questions', 'is_survey']
         read_only_fields = ('questions',)
 
 class SurveySerializer(QuestionnaireSerializer):
     events = serializers.PrimaryKeyRelatedField(read_only=True, many=True, source='events_s')
     is_survey = serializers.HiddenField(default=True)
 
-class QuestionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Question
-        fields = ['id', 'text', 'op1', 'op2', 'op3', 'op4', 'op5', 'questionnaire']
 
 class AnswerSerializer(serializers.ModelSerializer):
     def get_unique_together_validators(self):
