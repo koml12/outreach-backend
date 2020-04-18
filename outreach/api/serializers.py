@@ -115,7 +115,7 @@ class EventSerializer(serializers.ModelSerializer):
         attrs = super().validate(attrs)
         if('questionnaire' in attrs and attrs['questionnaire'] is not None and not attrs['questionnaire'].is_survey==False):
             raise serializers.ValidationError("The given questionnaire is a survey.")
-        if('survey' in attrs and attrs['questionnaire'] is not None and not attrs['survey'].is_survey==True):
+        if('survey' in attrs and attrs['survey'] is not None and not attrs['survey'].is_survey==True):
             raise serializers.ValidationError("The given survey is a questionnaire.")
         return attrs
     
