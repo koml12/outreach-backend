@@ -44,10 +44,9 @@ def ranking(request):
         tfidf_vectorizer = TfidfVectorizer(stop_words='english')
         job_desc_vector = tfidf_vectorizer.fit_transform([job_desc]).toarray()
         resume_ranking = []
-        dq = []
         for registration in registrations:
             if registration.resume is None:
-                dq.append(registration)
+                resume_ranking.append(float("inf"))
             else:
                 file_path = os.path.abspath(os.path.join(registration.resume.file.path,'..','..','parsed_media', registration.resume.file.name))
                 f = open(file_path,mode='r')
@@ -57,7 +56,7 @@ def ranking(request):
                 knn_1 = NearestNeighbors(n_neighbors=1, algorithm='auto')
                 knn_1.fit(res_vec)
                 resume_ranking.extend(knn_1.kneighbors(job_desc_vector)[0][0].tolist())
-        resume_rankings = [x for _,x in sorted(zip(resume_ranking,registrations))] + dq
+        resume_rankings = [reg for _,reg in sorted([(x,y) for x,y in zip(resume_ranking, registrations)], key=lambda x: x[0])]
         return Response(RegistrationSerializer(resume_rankings,many=True).data)
     else:
         return Response({"Error": "Invalid job or event."})
