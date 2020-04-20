@@ -164,6 +164,9 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = QuestionnaireAns
         fields = ['id', 'candidate', 'evaluator', 'question', 'answer']
 
+class AnswerListSerializer(AnswerSerializer):
+    question = QuestionSerializer()
+
 class GroupSerializer(serializers.ModelSerializer):
     evaluator = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all(), default=serializers.CurrentUserDefault())
     class Meta:

@@ -2,7 +2,7 @@ from api.models import Group, Person, Registered, Event, Questionnaire, Question
 from rest_framework import views, viewsets, status
 from django.db.models import Count
 from rest_framework.response import Response
-from api.serializers import GroupSerializer, AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer, ResumeSerializer, JobSerializer
+from api.serializers import GroupSerializer, AnswerSerializer, QuestionSerializer, QuestionnaireSerializer, SurveySerializer, CandidateSerializer, PersonSerializer, RegistrationSerializer, EventSerializer, ResumeSerializer, JobSerializer, AnswerListSerializer
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from api.permissions import IsEvaluatorOrAdmin, isOwner_Person, isOwner_Registration, IsAdminUserOrReadOnly
@@ -66,7 +66,12 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class QuestionAnswerViewSet(viewsets.ModelViewSet):
     queryset = QuestionnaireAns.objects.all()
     serializer_class = AnswerSerializer
+    list_serializer_class = AnswerListSerializer
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return self.list_serializer_class
+        return super(viewsets.ModelViewSet, self).get_serializer_class()
 
 class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [IsEvaluatorOrAdmin]
