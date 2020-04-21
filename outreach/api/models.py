@@ -75,7 +75,7 @@ class Resume(models.Model):
 
 class Job(models.Model):
     name = models.CharField(max_length=50, name="Job Title")
-    description = models.CharField(max_length=1000, name="Description")
+    description = models.CharField(max_length=100000, name="Description")
 
 class Registered(models.Model):
     event = models.ForeignKey(

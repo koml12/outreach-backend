@@ -80,6 +80,8 @@ class GroupViewSet(viewsets.ModelViewSet):
         qs = Group.objects.all()
         if('event' in self.request.query_params.keys()):
             qs = qs.filter(event=self.request.query_params['event'])
+        if('evaluator' in self.request.query_params.keys()):
+            qs = qs.filter(evaluator=self.request.query_params['evaluator'])
         return qs
 
 @api_view(['GET'])
